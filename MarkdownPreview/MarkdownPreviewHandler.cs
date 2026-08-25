@@ -16,8 +16,13 @@ namespace MarkdownPreview
             var path = SelectedFilePath;
             Task.Delay(50).ContinueWith(t =>
             {
-                if (!string.IsNullOrEmpty(path)) control.DoPreview(path);
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+                if (string.IsNullOrEmpty(path) || control.IsDisposed) return;
+                try
+                {
+                    control.BeginInvoke(new Action(() => control.DoPreview(path)));
+                }
+                catch (InvalidOperationException) { }
+            }, TaskScheduler.Default);
             return control;
         }
     }

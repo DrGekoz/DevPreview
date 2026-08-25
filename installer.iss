@@ -15,7 +15,7 @@ DefaultDirName={autopf}\DevPreview
 DefaultGroupName=DevPreview
 UninstallDisplayIcon={app}\MarkdownPreview.dll
 OutputDir=dist
-OutputBaseFilename=DevPreviewSetup-{#MyAppVersion}
+OutputBaseFilename=DevPreviewSetup-1.0.0-fixed
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -35,11 +35,11 @@ Source: "DevPreview.cer"; DestDir: "{app}"; Flags: ignoreversion
 Filename: "{sys}\certutil.exe"; Parameters: "-addstore -f TrustedPublisher ""{app}\DevPreview.cer"""; StatusMsg: "Trusting DevPreview certificate..."; Flags: runhidden waituntilterminated
 Filename: "{app}\srm.exe"; Parameters: "install ""{app}\MarkdownPreview.dll"" -codebase"; StatusMsg: "Registering Explorer Preview Pane handler..."; Flags: runhidden waituntilterminated
 Filename: "{sys}\taskkill.exe"; Parameters: "/f /im explorer.exe"; Flags: runhidden waituntilterminated
-Filename: "{sys}\explorer.exe"; Flags: runhidden nowait
+Filename: "{win}\explorer.exe"; Flags: runhidden nowait
 
 [UninstallRun]
 Filename: "{app}\srm.exe"; Parameters: "uninstall ""{app}\MarkdownPreview.dll"""; Flags: runhidden waituntilterminated
 Filename: "{sys}\taskkill.exe"; Parameters: "/f /im explorer.exe"; Flags: runhidden waituntilterminated
-Filename: "{sys}\explorer.exe"; Flags: runhidden nowait
+Filename: "{win}\explorer.exe"; Flags: runhidden nowait
 
 
