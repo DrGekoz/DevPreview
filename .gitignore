@@ -1,0 +1,14 @@
+# Build output
+**/bin/
+**/obj/
+packages/
+
+# Local restore/tool files
+nuget.exe
+.vs/
+*.user
+*.suo
+
+# Installer output
+*.msi
+*.exe
