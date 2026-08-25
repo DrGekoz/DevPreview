@@ -1,0 +1,6 @@
+LIBRARY DevPreviewNative
+EXPORTS
+ DllGetClassObject
+ DllCanUnloadNow
+ DllRegisterServer
+ DllUnregisterServer
