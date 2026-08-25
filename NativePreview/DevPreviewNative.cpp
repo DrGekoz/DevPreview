@@ -7,6 +7,7 @@
 
 static const CLSID CLSID_DevPreview = {0x8b4fb2d1,0x2f50,0x4d64,{0x9a,0x71,0x34,0x5a,0x9f,0x70,0x4c,0x1e}};
 static HINSTANCE g_instance;
+static const wchar_t* DIAG_CLASS = L"DevPreviewNativeDiagnostic";
 
 class Preview final : public IPreviewHandler, public IInitializeWithFile {
  LONG refs=1; HWND parent=nullptr, host=nullptr; std::wstring file; PROCESS_INFORMATION pi{};
@@ -15,7 +16,7 @@ public:
  HRESULT QueryInterface(REFIID riid, void** pp){if(!pp)return E_POINTER;*pp=nullptr;if(riid==IID_IUnknown||riid==IID_IPreviewHandler)*pp=(IPreviewHandler*)this;else if(riid==IID_IInitializeWithFile)*pp=(IInitializeWithFile*)this;else return E_NOINTERFACE;AddRef();return S_OK;}
  HRESULT SetWindow(HWND hwnd, const RECT*){parent=hwnd;return S_OK;}
  HRESULT SetRect(const RECT* r){if(host&&r)SetWindowPos(host,nullptr,r->left,r->top,r->right-r->left,r->bottom-r->top,SWP_NOZORDER|SWP_NOACTIVATE);return S_OK;}
- HRESULT DoPreview(){if(!parent||file.empty())return E_FAIL;RECT r;GetClientRect(parent,&r);host=CreateWindowExW(0,L"STATIC",L"",WS_CHILD|WS_VISIBLE,r.left,r.top,r.right,r.bottom,parent,nullptr,g_instance,nullptr);std::wstring cmd=L"\""+std::wstring(L"C:\\Program Files\\DevPreview\\DevPreview.Renderer.exe")+L"\" --parent "+std::to_wstring((UINT_PTR)host)+L" --file \""+file+L"\"";STARTUPINFOW si{sizeof(si)};std::vector<wchar_t> b(cmd.begin(),cmd.end());b.push_back(0);if(!CreateProcessW(nullptr,b.data(),nullptr,nullptr,FALSE,0,nullptr,nullptr,&si,&pi))return HRESULT_FROM_WIN32(GetLastError());return S_OK;}
+ HRESULT DoPreview(){if(!parent||file.empty())return E_FAIL;RECT r;GetClientRect(parent,&r);host=CreateWindowExW(0,L"STATIC",L"DevPreview handler loaded",WS_CHILD|WS_VISIBLE|SS_CENTER|SS_CENTERIMAGE,r.left,r.top,r.right,r.bottom,parent,nullptr,g_instance,nullptr);if(!host)return HRESULT_FROM_WIN32(GetLastError());std::wstring cmd=L"\""+std::wstring(L"C:\\Program Files\\DevPreview\\DevPreview.Renderer.exe")+L"\" --parent "+std::to_wstring((UINT_PTR)host)+L" --file \""+file+L"\"";STARTUPINFOW si{sizeof(si)};std::vector<wchar_t> b(cmd.begin(),cmd.end());b.push_back(0);if(!CreateProcessW(nullptr,b.data(),nullptr,nullptr,FALSE,0,nullptr,nullptr,&si,&pi))return HRESULT_FROM_WIN32(GetLastError());return S_OK;}
  HRESULT Unload(){if(pi.hProcess){TerminateProcess(pi.hProcess,0);CloseHandle(pi.hProcess);CloseHandle(pi.hThread);pi={};}if(host){DestroyWindow(host);host=nullptr;}return S_OK;}
  HRESULT SetFocus(){return host?::SetFocus(host),S_OK:E_FAIL;} HRESULT QueryFocus(HWND* p){if(!p)return E_POINTER;*p=GetFocus();return S_OK;} HRESULT TranslateAccelerator(MSG*){return S_FALSE;}
  HRESULT Initialize(LPCWSTR p,DWORD){if(!p)return E_INVALIDARG;file=p;return S_OK;}
