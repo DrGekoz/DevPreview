@@ -21,6 +21,9 @@ SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=admin
 ArchitecturesInstallIn64BitMode=x64compatible
+CloseApplications=yes
+RestartApplications=no
+CloseApplicationsFilter=prevhost.exe;DevPreview.Renderer.exe
 
 
 [Files]
@@ -65,6 +68,18 @@ Filename: "{sys}\certutil.exe"; Parameters: "-addstore -f TrustedPublisher ""{ap
 Filename: "{app}\srm.exe"; Parameters: "install ""{app}\MarkdownPreview.dll"" -codebase"; StatusMsg: "Registering Explorer Preview Pane handler..."; Flags: runhidden waituntilterminated
 Filename: "{sys}\taskkill.exe"; Parameters: "/f /im explorer.exe"; Flags: runhidden waituntilterminated
 Filename: "{win}\explorer.exe"; Flags: runhidden nowait
+
+[Code]
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+var
+  ResultCode: Integer;
+begin
+  Exec(ExpandConstant('{sys}\taskkill.exe'), '/f /im prevhost.exe', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Exec(ExpandConstant('{sys}\taskkill.exe'), '/f /im DevPreview.Renderer.exe', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Exec(ExpandConstant('{sys}\taskkill.exe'), '/f /im explorer.exe', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Sleep(1000);
+  Result := '';
+end;
 
 [UninstallRun]
 Filename: "{app}\srm.exe"; Parameters: "uninstall ""{app}\MarkdownPreview.dll"""; Flags: runhidden waituntilterminated
