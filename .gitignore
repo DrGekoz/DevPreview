@@ -10,5 +10,10 @@ nuget.exe
 *.suo
 
 # Installer output
-*.msi
-*.exe
+dist/*.exe
+dist/*.msi
+
+# Local signing material
+cert-thumbprint.txt
+create-cert.ps1
+*.pfx

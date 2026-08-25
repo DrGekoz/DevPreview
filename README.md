@@ -48,7 +48,17 @@ MSBuild.exe MarkdownPreview\MarkdownPreview.csproj /p:Configuration=Release
 
 ## Installation
 
-The compiled handler must be registered as a SharpShell COM server with Explorer Preview Handler registration enabled. The original `Setup\Setup.vdproj` is retained as the starting point for the installer work.
+Download `DevPreviewSetup-1.0.0.exe` from the GitHub release and run it as Administrator. The setup program installs the handler, its dependencies, SharpShell's registration manager, the local DevPreview certificate, and the Explorer registrations. It also provides normal Windows uninstall support.
+
+This release uses a self-signed certificate. It is suitable for this machine or machines where the included certificate is explicitly trusted. It is not a publicly trusted commercial certificate, so SmartScreen may still show a warning on other computers.
+
+The installer is built from `installer.iss` with Inno Setup and signed with the DevPreview self-signed Authenticode certificate.
+
+For a source build, the handler can be registered manually:
+
+```text
+BuildTools\srm.exe install MarkdownPreview\bin\Release\MarkdownPreview.dll -codebase
+```
 
 After installation:
 
