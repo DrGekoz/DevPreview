@@ -2,7 +2,7 @@
 using SharpShell.SharpPreviewHandler;
 using System;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+
 using System.Windows.Forms;
 
 namespace MarkdownPreview
@@ -14,15 +14,7 @@ namespace MarkdownPreview
             var control = new MarkdownHandlerPreviewControl();
             control.VerticalScroll.Enabled = true;
             var path = SelectedFilePath;
-            Task.Delay(50).ContinueWith(t =>
-            {
-                if (string.IsNullOrEmpty(path) || control.IsDisposed) return;
-                try
-                {
-                    control.BeginInvoke(new Action(() => control.DoPreview(path)));
-                }
-                catch (InvalidOperationException) { }
-            }, TaskScheduler.Default);
+            if (!string.IsNullOrEmpty(path)) control.DoPreview(path);
             return control;
         }
     }
