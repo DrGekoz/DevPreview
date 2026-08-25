@@ -1,6 +1,10 @@
 # Build output
 **/bin/
 **/obj/
+**/*.dll
+**/*.lib
+**/*.exp
+**/*.obj
 packages/
 
 # Local restore/tool files
