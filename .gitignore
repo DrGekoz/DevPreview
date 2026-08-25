@@ -17,3 +17,5 @@ dist/*.msi
 cert-thumbprint.txt
 create-cert.ps1
 *.pfx
+
+install-test.log
